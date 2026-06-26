@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<title>KUMA</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#222;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);
+  --text:#e8e8e8;--text2:#999;--text3:#555;
+  --accent:#7F77DD;--amber:#EF9F27;--green:#1D9E75;--red:#E24B4A;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;overscroll-behavior:none}
+#app{display:flex;flex-direction:column;height:100%;max-width:500px;margin:0 auto}
+
+/* Header */
+.header{display:flex;align-items:center;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:var(--bg2);border-bottom:0.5px solid var(--border);gap:10px;flex-shrink:0}
+.header-title{font-size:17px;font-weight:600;flex:1}
+.header-date{font-size:12px;color:var(--text2)}
+
+/* Date nav */
+.date-nav{display:flex;align-items:center;gap:0;padding:10px 16px;background:var(--bg2);border-bottom:0.5px solid var(--border);flex-shrink:0}
+.date-nav button{background:none;border:0.5px solid var(--border2);color:var(--text2);padding:6px 14px;border-radius:8px;font-size:15px;cursor:pointer}
+.date-nav .date-label{flex:1;text-align:center;font-size:15px;font-weight:500}
+
+/* Tabs */
+.tabs{display:flex;background:var(--bg2);border-bottom:0.5px solid var(--border);flex-shrink:0}
+.tab{flex:1;padding:10px 0;text-align:center;font-size:13px;color:var(--text2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+
+/* Content */
+.content{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.content::-webkit-scrollbar{display:none}
+
+/* Card */
+.card{background:var(--bg2);border-radius:12px;padding:14px;border:0.5px solid var(--border)}
+.card-title{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px}
+
+/* Habit row */
+.habit-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--border)}
+.habit-row:last-child{border-bottom:none}
+.habit-name{font-size:15px}
+.check-btn{width:28px;height:28px;border-radius:7px;border:1.5px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.check-btn.done{background:var(--amber);border-color:var(--amber)}
+.check-btn.done::after{content:'✓';color:#fff;font-size:16px;font-weight:700}
+
+/* Task row */
+.task-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border)}
+.task-row:last-child{border-bottom:none}
+.task-cb{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.task-cb.done{background:var(--accent);border-color:var(--accent)}
+.task-cb.done::after{content:'✓';color:#fff;font-size:13px;font-weight:700}
+.task-text{font-size:15px;flex:1}
+.task-text.done{text-decoration:line-through;color:var(--text3)}
+.del-btn{background:none;border:none;color:var(--text3);font-size:18px;padding:4px;cursor:pointer}
+
+/* Diary */
+.diary-entry{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
+.diary-entry:last-child{border-bottom:none}
+.diary-dot{color:var(--amber);font-size:18px;line-height:1.5;flex-shrink:0}
+.diary-text{font-size:15px;flex:1;line-height:1.5;color:var(--text)}
+
+/* Post */
+.post-card{padding:10px 0;border-bottom:0.5px solid var(--border)}
+.post-card:last-child{border-bottom:none}
+.post-time{font-size:12px;color:var(--text3);margin-bottom:4px}
+.post-text{font-size:14px;line-height:1.6;color:var(--text)}
+
+/* Input area */
+.input-row{display:flex;gap:8px;margin-top:10px}
+.inp{flex:1;padding:10px 12px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:15px;outline:none;-webkit-appearance:none}
+.inp::placeholder{color:var(--text3)}
+.add-btn{padding:10px 16px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:500;cursor:pointer}
+
+/* Textarea */
+textarea.inp{resize:none;font-family:inherit}
+
+/* Empty */
+.empty{color:var(--text3);font-size:14px;text-align:center;padding:20px 0}
+
+/* Loading */
+.loading{display:flex;align-items:center;justify-content:center;height:100px;color:var(--text3);font-size:14px}
+
+/* Bottom safe area */
+.safe-bottom{height:max(16px,env(safe-area-inset-bottom));flex-shrink:0}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="header">
+    <div>
+      <div class="header-title">🐻 KUMA</div>
+    </div>
+    <div class="header-date" id="header-date"></div>
+  </div>
+
+  <div class="date-nav">
+    <button onclick="changeDate(-1)">‹</button>
+    <div class="date-label" id="date-label"></div>
+    <button onclick="changeDate(1)">›</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab('habits')">Habits</button>
+    <button class="tab" onclick="setTab('tasks')">Tasks</button>
+    <button class="tab" onclick="setTab('memo')">Memo</button>
+    <button class="tab" onclick="setTab('post')">Post</button>
+  </div>
+
+  <div class="content" id="content"></div>
+  <div class="safe-bottom"></div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://werplrgmsgjtbovzjbig.supabase.co'
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcnBscmdtc2dqdGJvdnpqYmlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODA2MzAsImV4cCI6MjA5ODA1NjYzMH0.5NQnA8eDZpl1P68vu2Bpaak5yYF0IjtrHJSbuNd6AoE'
+
+const api = async (method, path, body) => {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    method,
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': method === 'POST' ? 'return=representation' : '',
+    },
+    body: body ? JSON.stringify(body) : undefined
+  })
+  if (!res.ok && res.status !== 204) {
+    const err = await res.text()
+    throw new Error(err)
+  }
+  if (res.status === 204) return null
+  return res.json()
+}
+
+const get = (path) => api('GET', path)
+const post = (path, body) => api('POST', path, body)
+const patch = (path, body) => api('PATCH', path, body)
+const del = (path) => api('DELETE', path)
+
+// State
+let currentDate = new Date()
+let currentTab = 'habits'
+let habitDefs = []
+
+function dateStr(d) {
+  return d.toISOString().slice(0,10)
+}
+function formatDate(d) {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  return `${days[d.getDay()]}, ${months[d.getMonth()]} ${d.getDate()}`
+}
+
+function changeDate(delta) {
+  currentDate = new Date(currentDate)
+  currentDate.setDate(currentDate.getDate() + delta)
+  updateDateUI()
+  render()
+}
+
+function setTab(tab) {
+  currentTab = tab
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', ['habits','tasks','memo','post'][i] === tab)
+  })
+  render()
+}
+
+function updateDateUI() {
+  const today = new Date()
+  document.getElementById('date-label').textContent = formatDate(currentDate)
+  document.getElementById('header-date').textContent =
+    dateStr(currentDate) === dateStr(today) ? 'Today' :
+    dateStr(new Date(today.getTime()-86400000)) === dateStr(currentDate) ? 'Yesterday' : ''
+}
+
+async function render() {
+  const content = document.getElementById('content')
+  content.innerHTML = '<div class="loading">Loading…</div>'
+  try {
+    if (currentTab === 'habits') await renderHabits()
+    else if (currentTab === 'tasks') await renderTasks()
+    else if (currentTab === 'memo') await renderMemo()
+    else if (currentTab === 'post') await renderPost()
+  } catch(e) {
+    content.innerHTML = `<div class="empty">Error: ${e.message}</div>`
+  }
+}
+
+// ── Habits ────────────────────────────────────────────────────────────────────
+async function renderHabits() {
+  if (!habitDefs.length) {
+    habitDefs = await get('kuma_habit_definitions?order=sort_order')
+  }
+  const habits = await get(`kuma_habits?date=eq.${dateStr(currentDate)}`)
+  const doneMap = {}
+  habits.forEach(h => doneMap[h.habit_index] = h.done)
+
+  const content = document.getElementById('content')
+  content.innerHTML = ''
+  const card = document.createElement('div')
+  card.className = 'card'
+  card.innerHTML = '<div class="card-title">Daily Habits</div>'
+
+  habitDefs.forEach((hd, i) => {
+    const done = !!doneMap[i]
+    const row = document.createElement('div')
+    row.className = 'habit-row'
+    row.innerHTML = `<span class="habit-name">${hd.name}</span><button class="check-btn ${done?'done':''}" onclick="toggleHabit(${i},${done})"></button>`
+    card.appendChild(row)
+  })
+  content.appendChild(card)
+}
+
+async function toggleHabit(idx, currentDone) {
+  const date = dateStr(currentDate)
+  const existing = await get(`kuma_habits?date=eq.${date}&habit_index=eq.${idx}`)
+  if (existing.length) {
+    await patch(`kuma_habits?date=eq.${date}&habit_index=eq.${idx}`, { done: !currentDone })
+  } else {
+    await post('kuma_habits', { date, habit_index: idx, done: !currentDone })
+  }
+  await renderHabits()
+}
+
+// ── Tasks ─────────────────────────────────────────────────────────────────────
+async function renderTasks() {
+  const tasks = await get(`kuma_daily_tasks?date=eq.${dateStr(currentDate)}&order=id`)
+  const content = document.getElementById('content')
+  content.innerHTML = ''
+  const card = document.createElement('div')
+  card.className = 'card'
+  card.innerHTML = '<div class="card-title">Daily Tasks</div>'
+
+  if (!tasks.length) card.innerHTML += '<div class="empty">No tasks</div>'
+  tasks.forEach(t => {
+    const row = document.createElement('div')
+    row.className = 'task-row'
+    row.innerHTML = `
+      <div class="task-cb ${t.done?'done':''}" onclick="toggleTask(${t.id},${t.done})"></div>
+      <span class="task-text ${t.done?'done':''}">${t.title}</span>
+      <button class="del-btn" onclick="deleteTask(${t.id})">×</button>`
+    card.appendChild(row)
+  })
+
+  const inputRow = document.createElement('div')
+  inputRow.className = 'input-row'
+  inputRow.innerHTML = `<input class="inp" id="task-inp" placeholder="Add task…" onkeydown="if(event.key==='Enter')addTask()"><button class="add-btn" onclick="addTask()">+</button>`
+  card.appendChild(inputRow)
+  content.appendChild(card)
+}
+
+async function toggleTask(id, done) {
+  await patch(`kuma_daily_tasks?id=eq.${id}`, { done: !done })
+  await renderTasks()
+}
+async function deleteTask(id) {
+  await del(`kuma_daily_tasks?id=eq.${id}`)
+  await renderTasks()
+}
+async function addTask() {
+  const inp = document.getElementById('task-inp')
+  if (!inp.value.trim()) return
+  await post('kuma_daily_tasks', { date: dateStr(currentDate), title: inp.value.trim() })
+  inp.value = ''
+  await renderTasks()
+}
+
+// ── Memo ──────────────────────────────────────────────────────────────────────
+async function renderMemo() {
+  const entries = await get(`kuma_diary?date=eq.${dateStr(currentDate)}&order=id`)
+  const content = document.getElementById('content')
+  content.innerHTML = ''
+  const card = document.createElement('div')
+  card.className = 'card'
+  card.innerHTML = '<div class="card-title">Memo</div>'
+
+  if (!entries.length) card.innerHTML += '<div class="empty">No notes</div>'
+  entries.forEach(e => {
+    const row = document.createElement('div')
+    row.className = 'diary-entry'
+    row.innerHTML = `<span class="diary-dot">·</span><span class="diary-text">${e.content}</span><button class="del-btn" onclick="deleteMemo(${e.id})">×</button>`
+    card.appendChild(row)
+  })
+
+  const inputRow = document.createElement('div')
+  inputRow.className = 'input-row'
+  inputRow.innerHTML = `<input class="inp" id="memo-inp" placeholder="Add note…" onkeydown="if(event.key==='Enter')addMemo()"><button class="add-btn" onclick="addMemo()">+</button>`
+  card.appendChild(inputRow)
+  content.appendChild(card)
+}
+async function deleteMemo(id) {
+  await del(`kuma_diary?id=eq.${id}`)
+  await renderMemo()
+}
+async function addMemo() {
+  const inp = document.getElementById('memo-inp')
+  if (!inp.value.trim()) return
+  await post('kuma_diary', { date: dateStr(currentDate), content: inp.value.trim() })
+  inp.value = ''
+  await renderMemo()
+}
+
+// ── Post ──────────────────────────────────────────────────────────────────────
+async function renderPost() {
+  const posts = await get(`kuma_posts?date=eq.${dateStr(currentDate)}&order=id`)
+  const content = document.getElementById('content')
+  content.innerHTML = ''
+  const card = document.createElement('div')
+  card.className = 'card'
+  card.innerHTML = '<div class="card-title">X Post</div>'
+
+  if (!posts.length) card.innerHTML += '<div class="empty">No posts</div>'
+  posts.forEach(p => {
+    const row = document.createElement('div')
+    row.className = 'post-card'
+    row.innerHTML = `<div class="post-time">${p.time||''}</div><div class="post-text">${p.content||''}</div>`
+    card.appendChild(row)
+  })
+
+  const inputRow = document.createElement('div')
+  inputRow.style.marginTop = '10px'
+  inputRow.innerHTML = `<textarea class="inp" id="post-inp" rows="4" placeholder="Write post…"></textarea><div class="input-row" style="margin-top:8px"><button class="add-btn" style="width:100%" onclick="addPost()">Save Post</button></div>`
+  card.appendChild(inputRow)
+  content.appendChild(card)
+}
+async function addPost() {
+  const inp = document.getElementById('post-inp')
+  if (!inp.value.trim()) return
+  const now = new Date()
+  const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0')
+  await post('kuma_posts', { date: dateStr(currentDate), time, content: inp.value.trim() })
+  inp.value = ''
+  await renderPost()
+}
+
+// Init
+updateDateUI()
+render()
+</script>
+</body>
+</html>
