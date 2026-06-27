@@ -11,12 +11,12 @@
 :root{--bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#222;--border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.15);--text:#e8e8e8;--text2:#999;--text3:#555;--accent:#7F77DD;--amber:#EF9F27;--green:#1D9E75}
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:15px;overscroll-behavior:none}
 #app{display:flex;flex-direction:column;height:100%;max-width:500px;margin:0 auto}
-.header{display:flex;align-items:center;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:var(--bg2);border-bottom:0.5px solid var(--border);gap:10px;flex-shrink:0}
+.header{display:flex;align-items:center;padding:12px 16px;padding-top:max(12px,env(safe-area-inset-top));background:var(--bg2);border-bottom:0.5px solid var(--border);flex-shrink:0}
 .header-title{font-size:17px;font-weight:600;flex:1}
 .header-date{font-size:12px;color:var(--text2)}
 .date-nav{display:flex;align-items:center;padding:10px 16px;background:var(--bg2);border-bottom:0.5px solid var(--border);flex-shrink:0;gap:8px}
 .date-nav button{background:none;border:0.5px solid var(--border2);color:var(--text2);padding:6px 14px;border-radius:8px;font-size:15px;cursor:pointer}
-.date-nav .date-label{flex:1;text-align:center;font-size:15px;font-weight:500}
+.date-label{flex:1;text-align:center;font-size:15px;font-weight:500}
 .tabs{display:flex;background:var(--bg2);border-bottom:0.5px solid var(--border);flex-shrink:0}
 .tab{flex:1;padding:10px 0;text-align:center;font-size:13px;color:var(--text2);border:none;background:none;cursor:pointer;border-bottom:2px solid transparent}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
@@ -25,31 +25,35 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-
 .card-title{font-size:11px;font-weight:600;color:var(--text2);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px}
 .habit-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:0.5px solid var(--border)}
 .habit-row:last-of-type{border-bottom:none}
-.check-btn{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:0}
+.check-btn{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--border2);background:transparent;cursor:pointer;flex-shrink:0;font-size:0;display:flex;align-items:center;justify-content:center}
 .check-btn.done{background:var(--amber);border-color:var(--amber)}
 .check-btn.done::after{content:'✓';color:#fff;font-size:17px;font-weight:700}
 .task-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--border)}
 .task-row:last-of-type{border-bottom:none}
-.task-cb{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border2);background:transparent;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:0}
+.task-cb{width:24px;height:24px;border-radius:6px;border:1.5px solid var(--border2);background:transparent;cursor:pointer;flex-shrink:0;font-size:0;display:flex;align-items:center;justify-content:center}
 .task-cb.done{background:var(--accent);border-color:var(--accent)}
 .task-cb.done::after{content:'✓';color:#fff;font-size:14px;font-weight:700}
 .task-text{font-size:15px;flex:1;line-height:1.4}
 .task-text.done{text-decoration:line-through;color:var(--text3)}
-.del-btn{background:none;border:none;color:var(--text3);font-size:20px;padding:4px 8px;cursor:pointer;line-height:1}
-.diary-entry{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)}
-.diary-entry:last-of-type{border-bottom:none}
-.diary-dot{color:var(--amber);font-size:20px;line-height:1.4;flex-shrink:0}
-.diary-text{font-size:15px;flex:1;line-height:1.5}
-.post-card{padding:10px 0;border-bottom:0.5px solid var(--border)}
-.post-card:last-of-type{border-bottom:none}
-.post-time{font-size:12px;color:var(--text3);margin-bottom:4px}
+.entry-row{display:flex;align-items:flex-start;gap:8px;padding:9px 0;border-bottom:0.5px solid var(--border)}
+.entry-row:last-of-type{border-bottom:none}
+.entry-dot{color:var(--amber);font-size:20px;line-height:1.4;flex-shrink:0}
+.entry-text{font-size:15px;flex:1;line-height:1.5}
+.entry-actions{display:flex;gap:2px;flex-shrink:0}
+.post-item{padding:9px 0;border-bottom:0.5px solid var(--border)}
+.post-item:last-of-type{border-bottom:none}
+.post-meta{display:flex;align-items:center;margin-bottom:4px}
+.post-time{font-size:12px;color:var(--text3);flex:1}
 .post-text{font-size:14px;line-height:1.6}
+.icon-btn{background:none;border:none;color:var(--text3);font-size:16px;padding:4px 6px;cursor:pointer;line-height:1}
 .input-row{display:flex;gap:8px;margin-top:10px}
-.inp{flex:1;padding:11px 12px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:15px;outline:none;-webkit-appearance:none}
+.inp{flex:1;padding:11px 12px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:15px;outline:none;-webkit-appearance:none;width:100%}
 .inp::placeholder{color:var(--text3)}
 textarea.inp{resize:none;font-family:inherit}
 .add-btn{padding:11px 16px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
 .save-btn{width:100%;padding:12px;background:var(--accent);border:none;border-radius:10px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px}
+.cancel-btn{width:100%;padding:12px;background:transparent;border:0.5px solid var(--border2);border-radius:10px;color:var(--text2);font-size:15px;cursor:pointer;margin-top:6px}
+.edit-box{background:var(--bg3);border-radius:10px;padding:10px;margin:6px 0;border:0.5px solid var(--accent)}
 .empty{color:var(--text3);font-size:14px;text-align:center;padding:20px 0}
 .loading{display:flex;align-items:center;justify-content:center;height:100px;color:var(--text3);font-size:14px}
 .err{color:#E24B4A;font-size:13px;padding:8px;background:#2e1515;border-radius:8px}
@@ -77,17 +81,15 @@ textarea.inp{resize:none;font-family:inherit}
   <div class="safe-bottom"></div>
 </div>
 <script>
-const URL = 'https://werplrgmsgjtbovzjbig.supabase.co/rest/v1'
+const SURL = 'https://werplrgmsgjtbovzjbig.supabase.co/rest/v1'
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndlcnBscmdtc2dqdGJvdnpqYmlnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0ODA2MzAsImV4cCI6MjA5ODA1NjYzMH0.5NQnA8eDZpl1P68vu2Bpaak5yYF0IjtrHJSbuNd6AoE'
-const H = { 'apikey':KEY, 'Authorization':'Bearer '+KEY, 'Content-Type':'application/json' }
+const H = {'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'}
 
 async function sb(method, table, body, query='') {
-  const res = await fetch(`${URL}/${table}${query}`, {
-    method,
-    headers: { ...H, ...(method==='POST' ? {'Prefer':'return=minimal'} : {}) },
+  const res = await fetch(`${SURL}/${table}${query}`, {
+    method, headers:{...H,...(method==='POST'?{'Prefer':'return=representation'}:{})},
     body: body ? JSON.stringify(body) : undefined
   })
-  if (method === 'DELETE' || method === 'PATCH') return true
   const text = await res.text()
   if (!res.ok) throw new Error(text)
   return text ? JSON.parse(text) : []
@@ -96,8 +98,12 @@ async function sb(method, table, body, query='') {
 let currentDate = new Date()
 let currentTab = 'habits'
 let habitDefs = []
+let editingId = null
 
-const ds = d => { const y=d.getFullYear(); const m=String(d.getMonth()+1).padStart(2,'0'); const day=String(d.getDate()).padStart(2,'0'); return `${y}-${m}-${day}` }
+const ds = d => {
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0')
+  return `${y}-${m}-${day}`
+}
 const fmt = d => {
   const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
   const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
@@ -105,36 +111,33 @@ const fmt = d => {
 }
 
 function changeDate(n) {
-  currentDate = new Date(currentDate)
-  currentDate.setDate(currentDate.getDate()+n)
-  updateUI(); render()
+  currentDate = new Date(currentDate); currentDate.setDate(currentDate.getDate()+n)
+  editingId = null; updateUI(); render()
 }
 function setTab(tab, el) {
-  currentTab = tab
+  currentTab = tab; editingId = null
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'))
-  el.classList.add('active')
-  render()
+  el.classList.add('active'); render()
 }
 function updateUI() {
   document.getElementById('date-label').textContent = fmt(currentDate)
   const today = new Date()
   document.getElementById('header-date').textContent =
-    ds(currentDate)===ds(today) ? 'Today' :
-    ds(currentDate)===ds(new Date(today-86400000)) ? 'Yesterday' : ''
+    ds(currentDate)===ds(today)?'Today':ds(currentDate)===ds(new Date(today-86400000))?'Yesterday':''
 }
 
+const C = () => document.getElementById('content')
 const el = id => document.getElementById(id)
-const content = () => el('content')
 
 async function render() {
-  content().innerHTML = '<div class="loading">Loading…</div>'
+  C().innerHTML = '<div class="loading">Loading…</div>'
   try {
     if (currentTab==='habits') await renderHabits()
     else if (currentTab==='tasks') await renderTasks()
     else if (currentTab==='memo') await renderMemo()
     else if (currentTab==='post') await renderPost()
   } catch(e) {
-    content().innerHTML = `<div class="card"><div class="err">Error: ${e.message}</div></div>`
+    C().innerHTML = `<div class="card"><div class="err">Error: ${e.message}</div></div>`
   }
 }
 
@@ -142,132 +145,163 @@ async function render() {
 async function renderHabits() {
   if (!habitDefs.length) habitDefs = await sb('GET','kuma_habit_definitions','','?order=sort_order')
   const habits = await sb('GET','kuma_habits','',`?date=eq.${ds(currentDate)}`)
-  const doneMap = {}
-  habits.forEach(h => doneMap[h.habit_index] = h.done)
-
-  const div = document.createElement('div')
-  div.className = 'card'
+  const doneMap = {}; habits.forEach(h => doneMap[h.habit_index]=h.done)
+  const div = document.createElement('div'); div.className='card'
   div.innerHTML = '<div class="card-title">Daily Habits</div>'
   habitDefs.forEach((hd,i) => {
     const done = !!doneMap[i]
-    const row = document.createElement('div')
-    row.className = 'habit-row'
+    const row = document.createElement('div'); row.className='habit-row'
     row.innerHTML = `<span>${hd.name}</span><div class="check-btn ${done?'done':''}" onclick="toggleHabit(${i},${done})"></div>`
     div.appendChild(row)
   })
-  content().innerHTML = ''
-  content().appendChild(div)
+  C().innerHTML=''; C().appendChild(div)
 }
-
 async function toggleHabit(idx, currentDone) {
   const date = ds(currentDate)
   const existing = await sb('GET','kuma_habits','',`?date=eq.${date}&habit_index=eq.${idx}`)
-  if (existing.length) {
-    await sb('PATCH','kuma_habits',{done:!currentDone},`?date=eq.${date}&habit_index=eq.${idx}`)
-  } else {
-    await sb('POST','kuma_habits',{date,habit_index:idx,done:!currentDone})
-  }
+  if (existing.length) await sb('PATCH','kuma_habits',{done:!currentDone},`?date=eq.${date}&habit_index=eq.${idx}`)
+  else await sb('POST','kuma_habits',{date,habit_index:idx,done:!currentDone})
   await renderHabits()
 }
 
 // ── Tasks ─────────────────────────────────────────────────────────────────────
 async function renderTasks() {
   const tasks = await sb('GET','kuma_daily_tasks','',`?date=eq.${ds(currentDate)}&order=id`)
-  const div = document.createElement('div')
-  div.className = 'card'
+  const div = document.createElement('div'); div.className='card'
   div.innerHTML = '<div class="card-title">Daily Tasks</div>'
   if (!tasks.length) div.innerHTML += '<div class="empty">No tasks yet</div>'
   tasks.forEach(t => {
-    const row = document.createElement('div')
-    row.className = 'task-row'
-    row.innerHTML = `<div class="task-cb ${t.done?'done':''}" onclick="toggleTask(${t.id},${t.done})"></div><span class="task-text ${t.done?'done':''}">${t.title}</span><button class="del-btn" onclick="delTask(${t.id})">×</button>`
+    const row = document.createElement('div'); row.className='task-row'
+    if (editingId === `task-${t.id}`) {
+      row.innerHTML = `<div class="edit-box" style="flex:1">
+        <input class="inp" id="edit-task-${t.id}" value="${t.title}" style="margin-bottom:6px">
+        <div style="display:flex;gap:6px">
+          <button class="save-btn" style="margin-top:0" onclick="saveTask(${t.id})">Save</button>
+          <button class="cancel-btn" style="margin-top:0" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>
+      <button class="icon-btn" onclick="delTask(${t.id})">🗑</button>`
+    } else {
+      row.innerHTML = `<div class="task-cb ${t.done?'done':''}" onclick="toggleTask(${t.id},${t.done})"></div>
+        <span class="task-text ${t.done?'done':''}">${t.title}</span>
+        <div class="entry-actions">
+          <button class="icon-btn" onclick="startEdit('task-${t.id}')">✏️</button>
+          <button class="icon-btn" onclick="delTask(${t.id})">🗑</button>
+        </div>`
+    }
     div.appendChild(row)
   })
-  const inp = document.createElement('div')
-  inp.className = 'input-row'
+  const inp = document.createElement('div'); inp.className='input-row'
   inp.innerHTML = `<input class="inp" id="task-inp" placeholder="Add task…"><button class="add-btn" onclick="addTask()">+</button>`
   div.appendChild(inp)
-  content().innerHTML = ''
-  content().appendChild(div)
-  el('task-inp').addEventListener('keydown', e => e.key==='Enter' && addTask())
+  C().innerHTML=''; C().appendChild(div)
+  el('task-inp')?.addEventListener('keydown', e => e.key==='Enter' && addTask())
 }
-async function toggleTask(id, done) {
-  await sb('PATCH','kuma_daily_tasks',{done:!done},`?id=eq.${id}`)
-  await renderTasks()
-}
-async function delTask(id) {
-  await sb('DELETE','kuma_daily_tasks','',`?id=eq.${id}`)
-  await renderTasks()
-}
+async function toggleTask(id, done) { await sb('PATCH','kuma_daily_tasks',{done:!done},`?id=eq.${id}`); await renderTasks() }
+async function delTask(id) { await sb('DELETE','kuma_daily_tasks','',`?id=eq.${id}`); await renderTasks() }
 async function addTask() {
-  const inp = el('task-inp')
-  if (!inp?.value.trim()) return
+  const inp = el('task-inp'); if (!inp?.value.trim()) return
   await sb('POST','kuma_daily_tasks',{date:ds(currentDate),title:inp.value.trim(),done:false})
-  inp.value = ''
-  await renderTasks()
+  inp.value=''; await renderTasks()
+}
+async function saveTask(id) {
+  const inp = el(`edit-task-${id}`); if (!inp?.value.trim()) return
+  await sb('PATCH','kuma_daily_tasks',{title:inp.value.trim()},`?id=eq.${id}`)
+  editingId=null; await renderTasks()
 }
 
 // ── Memo ──────────────────────────────────────────────────────────────────────
 async function renderMemo() {
   const entries = await sb('GET','kuma_diary','',`?date=eq.${ds(currentDate)}&order=id`)
-  const div = document.createElement('div')
-  div.className = 'card'
+  const div = document.createElement('div'); div.className='card'
   div.innerHTML = '<div class="card-title">Memo</div>'
   if (!entries.length) div.innerHTML += '<div class="empty">No notes yet</div>'
   entries.forEach(e => {
-    const row = document.createElement('div')
-    row.className = 'diary-entry'
-    row.innerHTML = `<span class="diary-dot">·</span><span class="diary-text">${e.content}</span><button class="del-btn" onclick="delMemo(${e.id})">×</button>`
+    const row = document.createElement('div'); row.className='entry-row'
+    if (editingId === `memo-${e.id}`) {
+      row.innerHTML = `<div class="edit-box" style="flex:1">
+        <textarea class="inp" id="edit-memo-${e.id}" rows="3" style="margin-bottom:6px">${e.content}</textarea>
+        <div style="display:flex;gap:6px">
+          <button class="save-btn" style="margin-top:0" onclick="saveMemo(${e.id})">Save</button>
+          <button class="cancel-btn" style="margin-top:0" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>`
+    } else {
+      row.innerHTML = `<span class="entry-dot">·</span>
+        <span class="entry-text">${e.content}</span>
+        <div class="entry-actions">
+          <button class="icon-btn" onclick="startEdit('memo-${e.id}')">✏️</button>
+          <button class="icon-btn" onclick="delMemo(${e.id})">🗑</button>
+        </div>`
+    }
     div.appendChild(row)
   })
-  const inp = document.createElement('div')
-  inp.className = 'input-row'
+  const inp = document.createElement('div'); inp.className='input-row'
   inp.innerHTML = `<input class="inp" id="memo-inp" placeholder="Add note…"><button class="add-btn" onclick="addMemo()">+</button>`
   div.appendChild(inp)
-  content().innerHTML = ''
-  content().appendChild(div)
-  el('memo-inp').addEventListener('keydown', e => e.key==='Enter' && addMemo())
+  C().innerHTML=''; C().appendChild(div)
+  el('memo-inp')?.addEventListener('keydown', e => e.key==='Enter' && addMemo())
 }
-async function delMemo(id) {
-  await sb('DELETE','kuma_diary','',`?id=eq.${id}`)
-  await renderMemo()
-}
+async function delMemo(id) { await sb('DELETE','kuma_diary','',`?id=eq.${id}`); await renderMemo() }
 async function addMemo() {
-  const inp = el('memo-inp')
-  if (!inp?.value.trim()) return
+  const inp = el('memo-inp'); if (!inp?.value.trim()) return
   await sb('POST','kuma_diary',{date:ds(currentDate),content:inp.value.trim()})
-  inp.value = ''
-  await renderMemo()
+  inp.value=''; await renderMemo()
+}
+async function saveMemo(id) {
+  const inp = el(`edit-memo-${id}`); if (!inp?.value.trim()) return
+  await sb('PATCH','kuma_diary',{content:inp.value.trim()},`?id=eq.${id}`)
+  editingId=null; await renderMemo()
 }
 
 // ── Post ──────────────────────────────────────────────────────────────────────
 async function renderPost() {
   const posts = await sb('GET','kuma_posts','',`?date=eq.${ds(currentDate)}&order=id`)
-  const div = document.createElement('div')
-  div.className = 'card'
+  const div = document.createElement('div'); div.className='card'
   div.innerHTML = '<div class="card-title">X Post</div>'
   if (!posts.length) div.innerHTML += '<div class="empty">No posts yet</div>'
   posts.forEach(p => {
-    const row = document.createElement('div')
-    row.className = 'post-card'
-    row.innerHTML = `<div class="post-time">${p.time||''}</div><div class="post-text">${p.content||''}</div>`
+    const row = document.createElement('div'); row.className='post-item'
+    if (editingId === `post-${p.id}`) {
+      row.innerHTML = `<div class="edit-box">
+        <textarea class="inp" id="edit-post-${p.id}" rows="4" style="margin-bottom:6px">${p.content||''}</textarea>
+        <div style="display:flex;gap:6px">
+          <button class="save-btn" style="margin-top:0" onclick="savePost(${p.id})">Save</button>
+          <button class="cancel-btn" style="margin-top:0" onclick="cancelEdit()">Cancel</button>
+        </div>
+      </div>`
+    } else {
+      row.innerHTML = `<div class="post-meta">
+        <span class="post-time">${p.time||''}</span>
+        <button class="icon-btn" onclick="startEdit('post-${p.id}')">✏️</button>
+        <button class="icon-btn" onclick="delPost(${p.id})">🗑</button>
+      </div>
+      <div class="post-text">${p.content||''}</div>`
+    }
     div.appendChild(row)
   })
   const inp = document.createElement('div')
-  inp.innerHTML = `<textarea class="inp" id="post-inp" rows="4" placeholder="Write post…"></textarea><button class="save-btn" onclick="addPost()">Save Post</button>`
+  inp.innerHTML = `<textarea class="inp" id="post-inp" rows="4" placeholder="Write post…" style="margin-top:10px"></textarea>
+    <button class="save-btn" onclick="addPost()">Save Post</button>`
   div.appendChild(inp)
-  content().innerHTML = ''
-  content().appendChild(div)
+  C().innerHTML=''; C().appendChild(div)
 }
+async function delPost(id) { await sb('DELETE','kuma_posts','',`?id=eq.${id}`); await renderPost() }
 async function addPost() {
-  const inp = el('post-inp')
-  if (!inp?.value.trim()) return
+  const inp = el('post-inp'); if (!inp?.value.trim()) return
   const now = new Date()
   const time = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')
   await sb('POST','kuma_posts',{date:ds(currentDate),time,content:inp.value.trim()})
-  inp.value = ''
-  await renderPost()
+  inp.value=''; await renderPost()
 }
+async function savePost(id) {
+  const inp = el(`edit-post-${id}`); if (!inp?.value.trim()) return
+  await sb('PATCH','kuma_posts',{content:inp.value.trim()},`?id=eq.${id}`)
+  editingId=null; await renderPost()
+}
+
+function startEdit(id) { editingId=id; render() }
+function cancelEdit() { editingId=null; render() }
 
 updateUI()
 render()
