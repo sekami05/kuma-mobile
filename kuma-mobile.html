@@ -63,6 +63,7 @@ textarea.inp{resize:none;font-family:inherit}
 .drawer-title{font-size:15px;font-weight:600;color:var(--text2);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px}
 .drawer-scroll{overflow-y:auto;flex:1}
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
 </head>
 <body>
 <div id="app">
@@ -336,7 +337,7 @@ async function renderPost() {
     meta.style.display = 'flex'
     meta.style.justifyContent = 'space-between'
     meta.style.alignItems = 'center'
-    meta.innerHTML = `<div class="post-time">${p.time||''}</div><div style="display:flex;gap:4px"><button class="del-btn" onclick="editPost(${p.id})" style="color:var(--text2);font-size:14px">✏️</button><button class="del-btn" onclick="delPost(${p.id})">×</button></div>`
+    meta.innerHTML = `<div class="post-time">${p.time||''}</div><div style="display:flex;gap:4px"><button class="del-btn" onclick="editPost(${p.id})" style="color:var(--text2);font-size:18px"><i class="ti ti-pencil"></i></button><button class="del-btn" onclick="delPost(${p.id})" style="font-size:18px"><i class="ti ti-trash"></i></button></div>`
     const text = document.createElement('div')
     text.className = 'post-text'
     text.id = 'post-text-'+p.id
