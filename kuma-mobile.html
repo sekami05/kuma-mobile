@@ -346,7 +346,8 @@ async function renderPost() {
     div.appendChild(row)
   })
   const inp = document.createElement('div')
-  inp.innerHTML = `<textarea class="inp" id="post-inp" rows="4" placeholder="Write post…"></textarea><button class="save-btn" onclick="addPost()">Save Post</button>`
+  inp.style.marginTop = '10px'
+  inp.innerHTML = `<textarea class="inp" id="post-inp" rows="4" placeholder="Write post…" style="width:100%;display:block"></textarea><button class="save-btn" onclick="addPost()">Save Post</button>`
   div.appendChild(inp)
   content().innerHTML = ''
   content().appendChild(div)
