@@ -54,6 +54,14 @@ textarea.inp{resize:none;font-family:inherit}
 .loading{display:flex;align-items:center;justify-content:center;height:100px;color:var(--text3);font-size:14px}
 .err{color:#E24B4A;font-size:13px;padding:8px;background:#2e1515;border-radius:8px}
 .safe-bottom{height:max(16px,env(safe-area-inset-bottom));flex-shrink:0}
+.later-fab{position:fixed;bottom:max(24px,env(safe-area-inset-bottom));right:20px;width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);z-index:100;display:flex;align-items:center;justify-content:center}
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;bottom:0;left:0;right:0;max-width:500px;margin:0 auto;background:var(--bg2);border-radius:20px 20px 0 0;z-index:201;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);padding:0 16px;padding-bottom:max(24px,env(safe-area-inset-bottom));max-height:75vh;display:flex;flex-direction:column}
+.drawer.open{transform:translateY(0)}
+.drawer-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:12px auto 16px}
+.drawer-title{font-size:15px;font-weight:600;color:var(--text2);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:12px}
+.drawer-scroll{overflow-y:auto;flex:1}
 </style>
 </head>
 <body>
@@ -70,12 +78,22 @@ textarea.inp{resize:none;font-family:inherit}
   <div class="tabs">
     <button class="tab active" onclick="setTab('habits',this)">Habits</button>
     <button class="tab" onclick="setTab('tasks',this)">Tasks</button>
-    <button class="tab" onclick="setTab('later',this)">Later</button>
     <button class="tab" onclick="setTab('memo',this)">Memo</button>
     <button class="tab" onclick="setTab('post',this)">Post</button>
   </div>
   <div class="content" id="content"></div>
   <div class="safe-bottom"></div>
+</div>
+<button class="later-fab" onclick="openLater()">☰</button>
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeLater()"></div>
+<div class="drawer" id="later-drawer">
+  <div class="drawer-handle"></div>
+  <div class="drawer-title">Later Tasks</div>
+  <div class="drawer-scroll" id="later-content"></div>
+  <div class="input-row" style="margin-top:12px">
+    <input class="inp" id="later-inp" placeholder="Add task…">
+    <button class="add-btn" onclick="addLater()">+</button>
+  </div>
 </div>
 <script>
 const URL = 'https://werplrgmsgjtbovzjbig.supabase.co/rest/v1'
@@ -133,7 +151,6 @@ async function render() {
     if (currentTab==='habits') await renderHabits()
     else if (currentTab==='tasks') await renderTasks()
     else if (currentTab==='memo') await renderMemo()
-    else if (currentTab==='later') await renderLater()
     else if (currentTab==='post') await renderPost()
   } catch(e) {
     content().innerHTML = `<div class="card"><div class="err">Error: ${e.message}</div></div>`
@@ -333,6 +350,68 @@ async function addPost() {
 
 updateUI()
 render()
+
+// ── Later Tasks Drawer ────────────────────────────────────────────────────────
+async function openLater() {
+  document.getElementById('drawer-overlay').classList.add('open')
+  document.getElementById('later-drawer').classList.add('open')
+  await loadLater()
+}
+function closeLater() {
+  document.getElementById('drawer-overlay').classList.remove('open')
+  document.getElementById('later-drawer').classList.remove('open')
+}
+async function loadLater() {
+  const lc = document.getElementById('later-content')
+  lc.innerHTML = '<div class="loading">Loading…</div>'
+  try {
+    const tasks = await sb('GET','tasks','','?order=sort_order')
+    if (!tasks.length) { lc.innerHTML = '<div class="empty">No tasks yet</div>'; return }
+    lc.innerHTML = ''
+    tasks.forEach(t => {
+      const row = document.createElement('div')
+      row.className = 'task-row'
+      row.innerHTML = `<div class="task-cb ${t.done?'done':''}" onclick="toggleLater(${t.id},${t.done})"></div><span class="task-text ${t.done?'done':''}" onclick="editLater(${t.id},this)">${t.title}</span><button class="del-btn" onclick="delLater(${t.id})">×</button>`
+      lc.appendChild(row)
+    })
+  } catch(e) {
+    lc.innerHTML = `<div class="err">Error: ${e.message}</div>`
+  }
+}
+async function toggleLater(id, done) {
+  await sb('PATCH','tasks',{done:!done},`?id=eq.${id}`)
+  await loadLater()
+}
+async function delLater(id) {
+  await sb('DELETE','tasks','',`?id=eq.${id}`)
+  await loadLater()
+}
+async function addLater() {
+  const inp = document.getElementById('later-inp')
+  if (!inp?.value.trim()) return
+  const all = await sb('GET','tasks','','?order=sort_order')
+  const maxOrder = all.length ? Math.max(...all.map(t=>t.sort_order||0)) : 0
+  await sb('POST','tasks',{title:inp.value.trim(),done:false,sort_order:maxOrder+1})
+  inp.value = ''
+  await loadLater()
+}
+async function editLater(id, span) {
+  const current = span.textContent
+  const input = document.createElement('input')
+  input.className = 'inp'
+  input.value = current
+  input.style.flex = '1'
+  span.replaceWith(input)
+  input.focus()
+  const save = async () => {
+    const val = input.value.trim()
+    if (val && val !== current) await sb('PATCH','tasks',{title:val},`?id=eq.${id}`)
+    await loadLater()
+  }
+  input.addEventListener('blur', save)
+  input.addEventListener('keydown', e => e.key==='Enter' && save())
+}
+document.getElementById('later-inp')?.addEventListener('keydown', e => e.key==='Enter' && addLater())
 </script>
 </body>
 </html>
