@@ -54,6 +54,11 @@ textarea.inp{resize:none;font-family:inherit}
 .loading{display:flex;align-items:center;justify-content:center;height:100px;color:var(--text3);font-size:14px}
 .err{color:#E24B4A;font-size:13px;padding:8px;background:#2e1515;border-radius:8px}
 .safe-bottom{height:max(16px,env(safe-area-inset-bottom));flex-shrink:0}
+.diary-img{width:100%;border-radius:8px;margin-top:6px;max-height:200px;object-fit:cover;cursor:pointer}
+.img-preview{width:100%;border-radius:8px;margin-top:8px;max-height:160px;object-fit:cover}
+.img-btn{padding:8px 14px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:8px;color:var(--text2);font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.9);z-index:300;display:flex;align-items:center;justify-content:center}
+.lightbox img{max-width:95%;max-height:90vh;border-radius:8px}
 .later-fab{position:fixed;bottom:max(24px,env(safe-area-inset-bottom));right:20px;width:52px;height:52px;border-radius:50%;background:var(--accent);border:none;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.4);z-index:100;display:flex;align-items:center;justify-content:center}
 .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.25s}
 .drawer-overlay.open{opacity:1;pointer-events:all}
@@ -228,6 +233,9 @@ async function addTask() {
 }
 
 // ── Memo ──────────────────────────────────────────────────────────────────────
+let memoImageFile = null
+let memoImagePreviewUrl = null
+
 async function renderMemo() {
   const entries = await sb('GET','kuma_diary','',`?date=eq.${ds(currentDate)}&order=id`)
   const div = document.createElement('div')
@@ -237,27 +245,112 @@ async function renderMemo() {
   entries.forEach(e => {
     const row = document.createElement('div')
     row.className = 'diary-entry'
-    row.innerHTML = `<span class="diary-dot">·</span><span class="diary-text">${e.content}</span><button class="del-btn" onclick="delMemo(${e.id})">×</button>`
+    row.style.flexDirection = 'column'
+    row.style.alignItems = 'flex-start'
+    const top = document.createElement('div')
+    top.style.cssText = 'display:flex;align-items:flex-start;width:100%;gap:8px'
+    top.innerHTML = `<span class="diary-dot">·</span><span class="diary-text" style="flex:1">${e.content}</span><button class="del-btn" onclick="delMemo(${e.id})">×</button>`
+    row.appendChild(top)
+    if (e.image_url) {
+      const img = document.createElement('img')
+      img.className = 'diary-img'
+      img.src = e.image_url
+      img.onclick = () => openLightbox(e.image_url)
+      row.appendChild(img)
+    }
     div.appendChild(row)
   })
+
+  // 入力エリア
   const inp = document.createElement('div')
-  inp.className = 'input-row'
-  inp.innerHTML = `<input class="inp" id="memo-inp" placeholder="Add note…"><button class="add-btn" onclick="addMemo()">+</button>`
+  inp.style.marginTop = '10px'
+  inp.innerHTML = `
+    <div class="input-row">
+      <input class="inp" id="memo-inp" placeholder="Add note…">
+      <button class="add-btn" onclick="addMemo()">+</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;align-items:center">
+      <button class="img-btn" onclick="document.getElementById('memo-img-input').click()">
+        <i class="ti ti-photo"></i> 画像
+      </button>
+      <input type="file" id="memo-img-input" accept="image/*" style="display:none" onchange="onMemoImageSelected(this)">
+      <span id="memo-img-name" style="font-size:13px;color:var(--text2)"></span>
+      <button id="memo-img-clear" style="display:none;background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer" onclick="clearMemoImage()">×</button>
+    </div>
+    <div id="memo-img-preview"></div>`
   div.appendChild(inp)
   content().innerHTML = ''
   content().appendChild(div)
   el('memo-inp').addEventListener('keydown', e => e.key==='Enter' && addMemo())
 }
+
+function onMemoImageSelected(input) {
+  const file = input.files[0]
+  if (!file) return
+  memoImageFile = file
+  memoImagePreviewUrl = URL.createObjectURL(file)
+  const nameEl = document.getElementById('memo-img-name')
+  const clearEl = document.getElementById('memo-img-clear')
+  const previewEl = document.getElementById('memo-img-preview')
+  if (nameEl) nameEl.textContent = file.name
+  if (clearEl) clearEl.style.display = 'block'
+  if (previewEl) previewEl.innerHTML = `<img src="${memoImagePreviewUrl}" class="img-preview">`
+}
+
+function clearMemoImage() {
+  memoImageFile = null
+  memoImagePreviewUrl = null
+  const nameEl = document.getElementById('memo-img-name')
+  const clearEl = document.getElementById('memo-img-clear')
+  const previewEl = document.getElementById('memo-img-preview')
+  const inputEl = document.getElementById('memo-img-input')
+  if (nameEl) nameEl.textContent = ''
+  if (clearEl) clearEl.style.display = 'none'
+  if (previewEl) previewEl.innerHTML = ''
+  if (inputEl) inputEl.value = ''
+}
+
+async function uploadMemoImage(file) {
+  const ext = file.name.split('.').pop() || 'jpg'
+  const fileName = `diary_${Date.now()}.${ext}`
+  const res = await fetch(`${URL.replace('/rest/v1','')}/storage/v1/object/kuma-images/${fileName}`, {
+    method: 'POST',
+    headers: { 'apikey': KEY, 'Authorization': 'Bearer '+KEY, 'Content-Type': file.type },
+    body: file
+  })
+  if (!res.ok) throw new Error('Upload failed: ' + await res.text())
+  return `${URL.replace('/rest/v1','')}/storage/v1/object/public/kuma-images/${fileName}`
+}
+
 async function delMemo(id) {
   await sb('DELETE','kuma_diary','',`?id=eq.${id}`)
   await renderMemo()
 }
+
 async function addMemo() {
   const inp = el('memo-inp')
   if (!inp?.value.trim()) return
-  await sb('POST','kuma_diary',{date:ds(currentDate),content:inp.value.trim()})
+  let image_url = null
+  if (memoImageFile) {
+    try {
+      image_url = await uploadMemoImage(memoImageFile)
+    } catch(e) {
+      alert('画像のアップロードに失敗しました: ' + e.message)
+      return
+    }
+  }
+  await sb('POST','kuma_diary',{date:ds(currentDate),content:inp.value.trim(),image_url})
   inp.value = ''
+  clearMemoImage()
   await renderMemo()
+}
+
+function openLightbox(url) {
+  const lb = document.createElement('div')
+  lb.className = 'lightbox'
+  lb.innerHTML = `<img src="${url}">`
+  lb.onclick = () => lb.remove()
+  document.body.appendChild(lb)
 }
 
 // ── Later Tasks ───────────────────────────────────────────────────────────────
