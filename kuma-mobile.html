@@ -329,7 +329,20 @@ async function renderPost() {
   posts.forEach(p => {
     const row = document.createElement('div')
     row.className = 'post-card'
-    row.innerHTML = `<div class="post-time">${p.time||''}</div><div class="post-text">${p.content||''}</div>`
+    row.style.display = 'flex'
+    row.style.flexDirection = 'column'
+    row.style.gap = '4px'
+    const meta = document.createElement('div')
+    meta.style.display = 'flex'
+    meta.style.justifyContent = 'space-between'
+    meta.style.alignItems = 'center'
+    meta.innerHTML = `<div class="post-time">${p.time||''}</div><div style="display:flex;gap:4px"><button class="del-btn" onclick="editPost(${p.id})" style="color:var(--text2);font-size:14px">✏️</button><button class="del-btn" onclick="delPost(${p.id})">×</button></div>`
+    const text = document.createElement('div')
+    text.className = 'post-text'
+    text.id = 'post-text-'+p.id
+    text.textContent = p.content||''
+    row.appendChild(meta)
+    row.appendChild(text)
     div.appendChild(row)
   })
   const inp = document.createElement('div')
@@ -337,6 +350,28 @@ async function renderPost() {
   div.appendChild(inp)
   content().innerHTML = ''
   content().appendChild(div)
+}
+async function delPost(id) {
+  await sb('DELETE','kuma_posts','',`?id=eq.${id}`)
+  await renderPost()
+}
+async function editPost(id) {
+  const textEl = document.getElementById('post-text-'+id)
+  if (!textEl) return
+  const current = textEl.textContent
+  const ta = document.createElement('textarea')
+  ta.className = 'inp'
+  ta.value = current
+  ta.rows = 3
+  ta.style.width = '100%'
+  textEl.replaceWith(ta)
+  ta.focus()
+  const save = async () => {
+    const val = ta.value.trim()
+    if (val && val !== current) await sb('PATCH','kuma_posts',{content:val},`?id=eq.${id}`)
+    await renderPost()
+  }
+  ta.addEventListener('blur', save)
 }
 async function addPost() {
   const inp = el('post-inp')
